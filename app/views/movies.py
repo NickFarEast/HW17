@@ -3,16 +3,16 @@ from app.database import db
 from app.models import Movie, MoviesSchema
 from flask import request
 
-movie_ns = Namespace('movies')
+movies_ns = Namespace('movies')
 
 movie_schema = MoviesSchema()
 movies_schema = MoviesSchema(many=True)
 
 
-@movie_ns.route('/')
+@movies_ns.route('/')
 class MoviesView(Resource):
     def get(self):
-
+        """Функция для отображения всех фильмов в базе или с отображением по запросу режиссера и жанра """
         movies_query = db.session.query(Movie)
 
         args = request.args
@@ -31,6 +31,7 @@ class MoviesView(Resource):
         return movies_schema.dump(movies), 200
 
     def post(self):
+        """Функция для записи нового фильма в базу"""
         movie = movie_schema.load(request.json)
         new_movie = Movie(**movie)
         with db.session.begin():
@@ -38,9 +39,10 @@ class MoviesView(Resource):
         return "", 201
 
 
-@movie_ns.route('/<int:mid>')
+@movies_ns.route('/<int:mid>')
 class MovieView(Resource):
     def get(self, mid):
+        """Функция для получения фильма из базы по ID"""
         try:
             movie = db.session.query(Movie).filter(Movie.id == mid).one()
             return movie_schema.dump(movie), 200
@@ -48,12 +50,14 @@ class MovieView(Resource):
             return "", 404
 
     def put(self, mid):
+        """Функция для внесения изменения в базу по ID"""
         db.session.query(Movie).filter(Movie.id == mid).update(request.json)
         db.session.commit()
 
         return "", 204
 
     def delete(self, mid):
+        """Функция для удаления из базы по ID"""
         db.session.query(Movie).filter(Movie.id == mid).delete()
         db.session.commit()
         return "", 204
