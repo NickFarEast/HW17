@@ -1,0 +1,5 @@
+app/__init__.py
+app/views/__init__.py
+.idea
+.venv
+requirements.txt

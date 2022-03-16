@@ -1,8 +1,8 @@
 from flask import Flask, request
-from flask_restx import Api, Resource
-from marshmallow import Schema, fields
+from flask_restx import Api
 from app.config import Config
 from app.database import db
+from app.views.movies import movie_ns
 
 
 def create_app(config: Config) -> Flask:
@@ -16,25 +16,7 @@ def create_app(config: Config) -> Flask:
 def configure_app(application: Flask):
     db.init_app(application)
     api = Api(app)
-    api.add_namespace('movies')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-movie_schema = MoviesSchema()
-movies_schema = MoviesSchema(many=True)
-
-
+    api.add_namespace(movie_ns)
 
 
 
